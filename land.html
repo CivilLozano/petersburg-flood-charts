@@ -74,8 +74,8 @@ body {
 .chart {
   height: 320px;
 
-  display: flex;                 /* 🔥 THIS FIXES EVERYTHING */
-  align-items: flex-end;         /* bars grow from bottom */
+  display: flex;
+  align-items: flex-end;
   justify-content: space-between;
   gap: 40px;
 
@@ -86,11 +86,10 @@ body {
   margin-top: 30px;
   padding: 10px;
 
-  /* gridlines */
+  /* gridlines aligned with your scale */
   background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
-  background-size: 100% 46px;   /* adjust spacing */
+  background-size: 100% 53px; /* ← correct for your 6.0 scale */
 }
-
 /* BAR */
 .bar {
     display: flex;
