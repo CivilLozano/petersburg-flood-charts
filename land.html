@@ -58,41 +58,44 @@ body {
 .y-left { left: -40px; }
 .y-right { right: -55px; }
 
-/* CHART (SHORTER) */
+/* CHART */
 .chart {
-  height: 320px;
+    height: 320px;
 
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 40px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
 
-  border-left: 2px solid #bbb;
-  border-bottom: 2px solid #bbb;
-  border-right: 2px solid #bbb;
+    border-left: 2px solid #bbb;
+    border-bottom: 2px solid #bbb;
+    border-right: 2px solid #bbb;
 
-  margin-top: 30px;
-  padding: 10px;
+    margin-top: 30px;
+    padding: 10px;
 
-  /* ✅ SAFE GRID */
-  background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
-  background-size: 100% 64px;
+    /* SAFE GRID */
+    background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
+    background-size: 100% 64px;
 }
-}
+
 /* BAR */
 .bar {
     display: flex;
     align-items: flex-end;
     justify-content: center;
     position: relative;
+    width: 80px; /* 🔥 critical */
 }
 
+/* BAR FILL */
 .fill {
-    width: 55%;
+    width: 100%;
     border-radius: 5px;
     cursor: pointer;
 }
 
+/* COLORS */
 .alt { background: #2f66c0; }
 .base { background: #7fbf5b; }
 
@@ -122,6 +125,8 @@ body {
 /* TABLE */
 .bottom {
     margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
 }
 
 .cell {
@@ -190,9 +195,9 @@ body {
   <div>0%</div>
 </div>
 
-<div class="chart grid" id="chart"></div>
+<div class="chart" id="chart"></div>
 
-<div class="bottom grid" id="table"></div>
+<div class="bottom" id="table"></div>
 
 <div class="group-row">
     <div class="group-box">FEMA</div>
@@ -213,7 +218,7 @@ fetch('data_land.json')
     const table = document.getElementById("table");
 
     const values = data.groups.flatMap(g => g.items.map(i => i.value));
-    const max = Math.max(...values);
+    const max = Math.max(...values); // 🔥 dynamic scaling
 
     data.groups.forEach(group => {
 
@@ -224,19 +229,19 @@ fetch('data_land.json')
 
             const fill = document.createElement("div");
             fill.className = "fill " + item.type;
-            fill.style.height = (item.value / 6) * 280 + "px";
+            fill.style.height = (item.value / max) * 280 + "px";
 
             const tooltip = document.createElement("div");
             tooltip.className = "tooltip";
             tooltip.innerHTML = `
-  <strong>${item.value} mi²</strong><br>
-  ${item.percent}% of total<br>
-  ${item.risk}
-`;
+                <strong>${item.value} mi²</strong><br>
+                ${item.percent}% of total<br>
+                ${item.risk}
+            `;
 
             bar.appendChild(fill);
-bar.appendChild(tooltip);
-chart.appendChild(bar);
+            bar.appendChild(tooltip);
+            chart.appendChild(bar);
 
             const cell = document.createElement("div");
             cell.className = "cell";
