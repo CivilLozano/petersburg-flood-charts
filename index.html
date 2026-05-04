@@ -7,60 +7,110 @@
 <style>
 body {
     font-family: Arial, sans-serif;
-    margin: 0;
     background: white;
+    margin: 0;
 }
 
 .title {
     text-align: center;
-    font-size: 36px;
-    font-weight: bold;
+    font-size: 42px;
+    font-weight: 700;
     color: #1f3b73;
     margin-top: 30px;
 }
 
-.chart {
+.chart-wrapper {
     width: 90%;
     margin: auto;
     margin-top: 40px;
+    position: relative;
 }
 
-.bar-container {
+.chart {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    height: 400px;
+    height: 420px;
     border-left: 2px solid #ccc;
     border-bottom: 2px solid #ccc;
     padding: 20px;
 }
 
+/* bars */
 .bar {
     width: 12%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: center;
 }
 
-.bar-fill {
+.fill {
     width: 100%;
-    border-radius: 4px;
+    border-radius: 6px;
 }
 
-.bar-label {
+/* colors */
+.base { background: #b7c6d9; }
+.alt { background: #2f66c0; }
+
+/* labels ABOVE bars */
+.top-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* bottom panel */
+.bottom-panel {
+    display: flex;
+    margin-top: 20px;
+    border: 1px solid #ccc;
+}
+
+.cell {
+    flex: 1;
+    text-align: center;
+    padding: 15px 5px;
+    border-right: 1px solid #ccc;
+}
+
+.cell:last-child {
+    border-right: none;
+}
+
+.value {
+    font-weight: bold;
+    font-size: 20px;
+    color: #1f3b73;
+}
+
+.group-row {
+    display: flex;
+    text-align: center;
     margin-top: 10px;
     font-weight: bold;
 }
 
-.bottom {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 30px;
-    font-size: 18px;
+/* axis labels */
+.left-axis {
+    position: absolute;
+    left: -70px;
+    top: 150px;
+    transform: rotate(-90deg);
+    font-weight: bold;
+    color: #1f3b73;
 }
 
-.group {
+.right-axis {
+    position: absolute;
+    right: -80px;
+    top: 150px;
+    transform: rotate(90deg);
+    font-weight: bold;
+    color: #1f3b73;
+}
+
+.bottom-title {
     text-align: center;
+    font-weight: bold;
+    margin-top: 20px;
 }
 </style>
 </head>
@@ -69,11 +119,17 @@ body {
 
 <div class="title">ROADS ON FLOOD PLAINS</div>
 
-<div class="chart">
+<div class="chart-wrapper">
 
-<div class="bar-container" id="bars"></div>
+<div class="left-axis">NUMBER OF ROADS</div>
+<div class="right-axis">% OF PETERSBURG ROADS</div>
 
-<div class="bottom" id="groups"></div>
+<div class="chart" id="chart"></div>
+
+<div class="bottom-panel" id="table"></div>
+<div class="group-row" id="groups"></div>
+
+<div class="bottom-title">ROADS ON FLOOD PLAIN BY RISK</div>
 
 </div>
 
@@ -82,37 +138,44 @@ fetch('data.json')
 .then(res => res.json())
 .then(data => {
 
-    const container = document.getElementById("bars");
+    const chart = document.getElementById("chart");
+    const table = document.getElementById("table");
     const groups = document.getElementById("groups");
 
     data.groups.forEach(group => {
 
         group.items.forEach(item => {
 
+            // BAR
             const bar = document.createElement("div");
             bar.className = "bar";
 
-            const fill = document.createElement("div");
-            fill.className = "bar-fill";
-            fill.style.height = item.percent * 4 + "px";
-
-            // alternating colors (same logic as your graphics)
-            fill.style.background = item.type === "base"
-                ? "#b0c4de"
-                : "#2f66c0";
-
             const label = document.createElement("div");
-            label.className = "bar-label";
+            label.className = "top-label";
             label.innerHTML = item.value + "<br>(" + item.percent + "%)";
 
-            bar.appendChild(fill);
+            const fill = document.createElement("div");
+            fill.className = "fill " + item.type;
+            fill.style.height = item.percent * 5 + "px";
+
             bar.appendChild(label);
-            container.appendChild(bar);
+            bar.appendChild(fill);
+            chart.appendChild(bar);
+
+            // TABLE CELL
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            cell.innerHTML = `
+                <div class="value">${item.value}</div>
+                <div>${item.risk}</div>
+            `;
+            table.appendChild(cell);
 
         });
 
+        // GROUP LABEL
         const g = document.createElement("div");
-        g.className = "group";
+        g.style.flex = "1";
         g.innerText = group.name;
         groups.appendChild(g);
 
