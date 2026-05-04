@@ -154,9 +154,7 @@ fetch('data.json')
             label.className = "top-label";
             label.innerHTML = item.value + "<br>(" + item.percent + "%)";
 
-            const fill = document.createElement("div");
-            fill.className = "fill " + item.type;
-            const max = 1400;
+            const max = Math.max(...data.groups.flatMap(g => g.items.map(i => i.value)));
 fill.style.height = (item.value / max) * 350 + "px";
 
             bar.appendChild(label);
