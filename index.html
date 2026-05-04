@@ -13,8 +13,8 @@ body {
 
 .title {
     text-align: center;
-    font-size: 42px;
-    font-weight: 700;
+    font-size: 48px;
+    font-weight: 800;
     color: #1f3b73;
     margin-top: 30px;
 }
@@ -29,7 +29,7 @@ body {
 .left-axis {
     position: absolute;
     left: -95px;
-    top: 230px;
+    top: 240px;
     transform: rotate(-90deg);
     font-weight: bold;
     color: #1f3b73;
@@ -37,8 +37,8 @@ body {
 
 .right-axis {
     position: absolute;
-    right: -115px;
-    top: 230px;
+    right: -120px;
+    top: 240px;
     transform: rotate(90deg);
     font-weight: bold;
     color: #1f3b73;
@@ -53,26 +53,29 @@ body {
     flex-direction: column;
     justify-content: space-between;
     font-size: 12px;
-    color: #444;
 }
 
 .y-left { left: -45px; }
-.y-right { right: -55px; }
+.y-right { right: -60px; }
 
-/* GRID SYSTEM — THIS FIXES ALIGNMENT */
+/* GRID SYSTEM */
 .grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
-    column-gap: 20px;
 }
 
 /* CHART */
 .chart {
     height: 440px;
-    border-left: 2px solid #ccc;
-    border-bottom: 2px solid #ccc;
-    padding: 20px 10px;
+    border-left: 2px solid #bbb;
+    border-bottom: 2px solid #bbb;
+    border-right: 2px solid #bbb; /* RIGHT AXIS LINE */
     margin-top: 40px;
+    padding: 20px 10px;
+
+    /* HORIZONTAL GRIDLINES */
+    background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
+    background-size: 100% 80px;
 }
 
 /* BAR */
@@ -84,7 +87,7 @@ body {
 }
 
 .fill {
-    width: 70%;
+    width: 60%;
     border-radius: 5px;
 }
 
@@ -94,46 +97,48 @@ body {
 .label {
     font-weight: bold;
     margin-bottom: 6px;
-    font-size: 13px;
+    font-size: 14px;
 }
 
 /* TABLE */
 .bottom {
     margin-top: 12px;
-    border-top: 1px solid #ccc;
 }
 
 .cell {
     text-align: center;
-    padding: 8px;
-    border-right: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-}
-
-.cell:last-child {
-    border-right: none;
+    padding: 10px;
+    border: 1px solid #bbb;
 }
 
 .value {
     font-weight: bold;
     color: #1f3b73;
+    font-size: 18px;
 }
 
-/* GROUP LABELS */
-.groups {
+/* GROUP BOXES */
+.group-row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    margin-top: 5px;
+    margin-top: -1px;
+}
+
+.group-box {
+    border: 1px solid #bbb;
     text-align: center;
-    font-weight: bold;
+    padding: 12px 0;
+    font-weight: 800;
+    font-size: 18px;
 }
 
 /* FOOTER */
 .bottom-title {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 12px;
     font-weight: bold;
     color: #1f3b73;
+    font-size: 18px;
 }
 </style>
 </head>
@@ -148,10 +153,10 @@ body {
 <div class="right-axis">% OF PETERSBURG ROADS</div>
 
 <div class="y-left">
-    <div>1400</div>
-    <div>1000</div>
-    <div>600</div>
-    <div>200</div>
+    <div>1600</div>
+    <div>1200</div>
+    <div>800</div>
+    <div>400</div>
     <div>0</div>
 </div>
 
@@ -163,16 +168,17 @@ body {
     <div>0%</div>
 </div>
 
-<!-- CHART GRID -->
+<!-- CHART -->
 <div class="chart grid" id="chart"></div>
 
-<!-- TABLE GRID -->
+<!-- TABLE -->
 <div class="bottom grid" id="table"></div>
 
-<div class="groups">
-    <div>FEMA</div>
-    <div>FATHOM</div>
-    <div>DCR</div>
+<!-- GROUP BOXES -->
+<div class="group-row">
+    <div class="group-box">FEMA</div>
+    <div class="group-box">FATHOM</div>
+    <div class="group-box">DCR</div>
 </div>
 
 <div class="bottom-title">ROADS ON FLOOD PLAIN BY RISK</div>
@@ -194,7 +200,6 @@ fetch('data.json')
 
         group.items.forEach(item => {
 
-            // BAR
             const bar = document.createElement("div");
             bar.className = "bar";
 
@@ -210,7 +215,6 @@ fetch('data.json')
             bar.appendChild(fill);
             chart.appendChild(bar);
 
-            // TABLE CELL (aligned via grid)
             const cell = document.createElement("div");
             cell.className = "cell";
             cell.innerHTML = `
