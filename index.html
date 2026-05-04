@@ -19,10 +19,9 @@ body {
     margin-top: 30px;
 }
 
-.chart-wrapper {
+.wrapper {
     width: 90%;
     margin: auto;
-    margin-top: 40px;
     position: relative;
 }
 
@@ -30,10 +29,11 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    height: 420px;
+    height: 400px;
     border-left: 2px solid #ccc;
     border-bottom: 2px solid #ccc;
     padding: 20px;
+    margin-top: 40px;
 }
 
 /* bars */
@@ -51,14 +51,14 @@ body {
 .base { background: #b7c6d9; }
 .alt { background: #2f66c0; }
 
-/* labels ABOVE bars */
-.top-label {
+/* labels above */
+.label {
     font-weight: bold;
     margin-bottom: 8px;
 }
 
-/* bottom panel */
-.bottom-panel {
+/* bottom table */
+.bottom {
     display: flex;
     margin-top: 20px;
     border: 1px solid #ccc;
@@ -66,8 +66,8 @@ body {
 
 .cell {
     flex: 1;
+    padding: 8px;
     text-align: center;
-    padding: 15px 5px;
     border-right: 1px solid #ccc;
 }
 
@@ -77,22 +77,22 @@ body {
 
 .value {
     font-weight: bold;
-    font-size: 20px;
     color: #1f3b73;
 }
 
-.group-row {
+/* groups */
+.groups {
     display: flex;
-    text-align: center;
     margin-top: 10px;
     font-weight: bold;
+    text-align: center;
 }
 
-/* axis labels */
+/* axis */
 .left-axis {
     position: absolute;
     left: -70px;
-    top: 150px;
+    top: 200px;
     transform: rotate(-90deg);
     font-weight: bold;
     color: #1f3b73;
@@ -100,8 +100,8 @@ body {
 
 .right-axis {
     position: absolute;
-    right: -80px;
-    top: 150px;
+    right: -90px;
+    top: 200px;
     transform: rotate(90deg);
     font-weight: bold;
     color: #1f3b73;
@@ -109,8 +109,8 @@ body {
 
 .bottom-title {
     text-align: center;
+    margin-top: 15px;
     font-weight: bold;
-    margin-top: 20px;
 }
 </style>
 </head>
@@ -119,15 +119,14 @@ body {
 
 <div class="title">ROADS ON FLOOD PLAINS</div>
 
-<div class="chart-wrapper">
+<div class="wrapper">
 
 <div class="left-axis">NUMBER OF ROADS</div>
 <div class="right-axis">% OF PETERSBURG ROADS</div>
 
 <div class="chart" id="chart"></div>
-
-<div class="bottom-panel" id="table"></div>
-<div class="group-row" id="groups"></div>
+<div class="bottom" id="table"></div>
+<div class="groups" id="groups"></div>
 
 <div class="bottom-title">ROADS ON FLOOD PLAIN BY RISK</div>
 
@@ -142,6 +141,10 @@ fetch('data.json')
     const table = document.getElementById("table");
     const groups = document.getElementById("groups");
 
+    // 🔥 calculate max correctly INSIDE here
+    const allValues = data.groups.flatMap(g => g.items.map(i => i.value));
+    const max = Math.max(...allValues);
+
     data.groups.forEach(group => {
 
         group.items.forEach(item => {
@@ -151,17 +154,20 @@ fetch('data.json')
             bar.className = "bar";
 
             const label = document.createElement("div");
-            label.className = "top-label";
+            label.className = "label";
             label.innerHTML = item.value + "<br>(" + item.percent + "%)";
 
-            const max = Math.max(...data.groups.flatMap(g => g.items.map(i => i.value)));
-fill.style.height = (item.value / max) * 350 + "px";
+            const fill = document.createElement("div");
+            fill.className = "fill " + item.type;
+
+            // ✅ correct scaling
+            fill.style.height = (item.value / max) * 350 + "px";
 
             bar.appendChild(label);
             bar.appendChild(fill);
             chart.appendChild(bar);
 
-            // TABLE CELL
+            // TABLE
             const cell = document.createElement("div");
             cell.className = "cell";
             cell.innerHTML = `
@@ -172,12 +178,11 @@ fill.style.height = (item.value / max) * 350 + "px";
 
         });
 
-        // GROUP LABEL
+        // GROUP LABEL (spans 2 bars)
         const g = document.createElement("div");
-g.style.flex = "2";  // spans 2 bars
-g.style.textAlign = "center";
-g.innerText = group.name;
-groups.appendChild(g);
+        g.style.flex = "2";
+        g.innerText = group.name;
+        groups.appendChild(g);
 
     });
 
