@@ -58,18 +58,6 @@ body {
 .y-left { left: -40px; }
 .y-right { right: -55px; }
 
-/* GRID */
-.grid {
-  position: absolute;
-  left: 60px;
-  right: 60px;
-  bottom: 120px;
-  top: 80px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
 /* CHART (SHORTER) */
 .chart {
   height: 320px;
@@ -86,9 +74,10 @@ body {
   margin-top: 30px;
   padding: 10px;
 
-  /* gridlines aligned with your scale */
+  /* ✅ SAFE GRID */
   background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
-  background-size: 100% 53px; /* ← correct for your 6.0 scale */
+  background-size: 100% 64px;
+}
 }
 /* BAR */
 .bar {
