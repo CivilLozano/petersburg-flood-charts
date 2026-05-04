@@ -1,0 +1,25 @@
+{
+  "groups": [
+    {
+      "name": "FEMA",
+      "items": [
+        {"value": 1.85, "percent": 8.06, "risk": "1.0% (100 yr)", "type": "base"},
+        {"value": 2.1, "percent": 9.15, "risk": "0.2% (500 yr)", "type": "alt"}
+      ]
+    },
+    {
+      "name": "FATHOM",
+      "items": [
+        {"value": 3.08, "percent": 13.43, "risk": "1.0% (100 yr)", "type": "base"},
+        {"value": 3.91, "percent": 17.04, "risk": "0.2% (500 yr)", "type": "alt"}
+      ]
+    },
+    {
+      "name": "DCR",
+      "items": [
+        {"value": 5.035, "percent": 21.95, "risk": "1.0% (100 yr)", "type": "base"},
+        {"value": 5.99, "percent": 26.11, "risk": "0.2% (500 yr)", "type": "alt"}
+      ]
+    }
+  ]
+}
