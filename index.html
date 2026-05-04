@@ -7,8 +7,8 @@
 <style>
 body {
     font-family: Arial, sans-serif;
-    background: white;
     margin: 0;
+    background: white;
 }
 
 .title {
@@ -20,57 +20,89 @@ body {
 }
 
 .wrapper {
-    width: 85%;
+    width: 80%;
     margin: auto;
+    position: relative;
 }
+
+/* AXIS LABELS */
+.left-axis {
+    position: absolute;
+    left: -95px;
+    top: 230px;
+    transform: rotate(-90deg);
+    font-weight: bold;
+    color: #1f3b73;
+}
+
+.right-axis {
+    position: absolute;
+    right: -115px;
+    top: 230px;
+    transform: rotate(90deg);
+    font-weight: bold;
+    color: #1f3b73;
+}
+
+/* AXIS TICKS */
+.y-left, .y-right {
+    position: absolute;
+    top: 40px;
+    height: 440px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #444;
+}
+
+.y-left { left: -45px; }
+.y-right { right: -55px; }
 
 /* CHART */
 .chart {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    height: 420px;
+    height: 440px;
     border-left: 2px solid #ccc;
     border-bottom: 2px solid #ccc;
-    padding: 20px;
+    padding: 20px 10px;
     margin-top: 40px;
 }
 
-/* BARS */
+/* BAR */
 .bar {
-    width: 9%;
+    width: 7%;
     text-align: center;
 }
 
 .fill {
     width: 100%;
-    border-radius: 6px;
+    border-radius: 5px;
 }
 
-.base { background: #b7c6d9; }
 .alt { background: #2f66c0; }
+.base { background: #b7c6d9; }
 
 .label {
     font-weight: bold;
     margin-bottom: 6px;
+    font-size: 13px;
 }
 
 /* TABLE */
 .bottom {
     display: flex;
-    margin-top: 15px;
-    border: 1px solid #ccc;
+    margin-top: 12px;
+    border-top: 1px solid #ccc;
 }
 
 .cell {
     flex: 1;
-    padding: 8px;
+    padding: 6px;
     text-align: center;
-    border-right: 1px solid #ccc;
-}
-
-.cell:last-child {
-    border-right: none;
+    font-size: 13px;
 }
 
 .value {
@@ -82,18 +114,18 @@ body {
 .groups {
     display: flex;
     margin-top: 5px;
-    font-weight: bold;
     text-align: center;
+    font-weight: bold;
 }
 
 .group {
     flex: 2;
 }
 
-/* BOTTOM TITLE */
+/* FOOTER */
 .bottom-title {
     text-align: center;
-    margin-top: 12px;
+    margin-top: 10px;
     font-weight: bold;
     color: #1f3b73;
 }
@@ -106,6 +138,27 @@ body {
 
 <div class="wrapper">
 
+<div class="left-axis">NUMBER OF ROADS</div>
+<div class="right-axis">% OF PETERSBURG ROADS</div>
+
+<!-- LEFT AXIS -->
+<div class="y-left">
+    <div>1400</div>
+    <div>1000</div>
+    <div>600</div>
+    <div>200</div>
+    <div>0</div>
+</div>
+
+<!-- RIGHT AXIS -->
+<div class="y-right">
+    <div>80%</div>
+    <div>60%</div>
+    <div>40%</div>
+    <div>20%</div>
+    <div>0%</div>
+</div>
+
 <div class="chart" id="chart"></div>
 
 <div class="bottom" id="table"></div>
@@ -116,7 +169,7 @@ body {
     <div class="group">DCR</div>
 </div>
 
-<div class="bottom-title">ROADS ON FLOOD PLAIN BY RISK (mi^2)</div>
+<div class="bottom-title">ROADS ON FLOOD PLAIN BY RISK</div>
 
 </div>
 
@@ -144,7 +197,6 @@ fetch('data.json')
 
             const fill = document.createElement("div");
             fill.className = "fill " + item.type;
-
             fill.style.height = (item.value / max) * 380 + "px";
 
             bar.appendChild(label);
