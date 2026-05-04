@@ -11,7 +11,6 @@ body {
     margin: 0;
 }
 
-/* TITLE */
 .title {
     text-align: center;
     font-size: 42px;
@@ -20,11 +19,51 @@ body {
     margin-top: 30px;
 }
 
-/* WRAPPER */
 .wrapper {
     width: 90%;
     margin: auto;
     position: relative;
+}
+
+/* AXIS LABELS */
+.left-axis, .right-axis {
+    position: absolute;
+    top: 200px;
+    font-weight: bold;
+    color: #1f3b73;
+}
+
+.left-axis {
+    left: -80px;
+    transform: rotate(-90deg);
+}
+
+.right-axis {
+    right: -110px;
+    transform: rotate(90deg);
+}
+
+/* AXIS TICKS */
+.y-axis {
+    position: absolute;
+    left: -40px;
+    top: 0;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.y-axis-right {
+    position: absolute;
+    right: -60px;
+    top: 0;
+    height: 450px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 12px;
 }
 
 /* CHART */
@@ -32,20 +71,19 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    height: 460px;
+    height: 450px;
     border-left: 2px solid #ccc;
     border-bottom: 2px solid #ccc;
-    padding: 20px;
-    margin-top: 30px;
+    padding: 20px 40px;
+    margin-top: 40px;
 }
 
 /* BAR */
 .bar {
-    width: 12%;
+    width: 10%;
     text-align: center;
 }
 
-/* BAR COLORS */
 .fill {
     width: 100%;
     border-radius: 6px;
@@ -54,13 +92,12 @@ body {
 .base { background: #b7c6d9; }
 .alt { background: #2f66c0; }
 
-/* LABEL ABOVE BAR */
 .label {
     font-weight: bold;
     margin-bottom: 6px;
 }
 
-/* TABLE */
+/* BOTTOM PANEL */
 .bottom {
     display: flex;
     margin-top: 10px;
@@ -83,54 +120,65 @@ body {
     color: #1f3b73;
 }
 
-/* GROUP LABELS */
-.groups {
+/* GROUP BOXES */
+.group-row {
     display: flex;
-    margin-top: 8px;
-    font-weight: bold;
+    margin-top: 5px;
+}
+
+.group-box {
+    flex: 2;
     text-align: center;
-}
-
-/* AXIS */
-.left-axis {
-    position: absolute;
-    left: -70px;
-    top: 190px;
-    transform: rotate(-90deg);
     font-weight: bold;
-    color: #1f3b73;
-}
-
-.right-axis {
-    position: absolute;
-    right: -90px;
-    top: 190px;
-    transform: rotate(90deg);
-    font-weight: bold;
-    color: #1f3b73;
+    padding-top: 5px;
 }
 
 /* BOTTOM TITLE */
 .bottom-title {
     text-align: center;
-    margin-top: 15px;
+    margin-top: 12px;
     font-weight: bold;
+    color: #1f3b73;
 }
 </style>
 </head>
 
 <body>
 
-<div class="title">TEST VERSION 2</div>
+<div class="title">ROADS ON FLOOD PLAINS</div>
 
 <div class="wrapper">
 
 <div class="left-axis">NUMBER OF ROADS</div>
 <div class="right-axis">% OF PETERSBURG ROADS</div>
 
+<!-- LEFT AXIS VALUES -->
+<div class="y-axis">
+    <div>1400</div>
+    <div>1000</div>
+    <div>600</div>
+    <div>200</div>
+    <div>0</div>
+</div>
+
+<!-- RIGHT AXIS VALUES -->
+<div class="y-axis-right">
+    <div>80%</div>
+    <div>60%</div>
+    <div>40%</div>
+    <div>20%</div>
+    <div>0%</div>
+</div>
+
 <div class="chart" id="chart"></div>
+
 <div class="bottom" id="table"></div>
-<div class="groups" id="groups"></div>
+
+<div class="group-row">
+    <div class="group-box">FEMA</div>
+    <div class="group-box">FATHOM</div>
+    <div class="group-box">DCR</div>
+</div>
 
 <div class="bottom-title">ROADS ON FLOOD PLAIN BY RISK</div>
 
@@ -143,9 +191,7 @@ fetch('data.json')
 
     const chart = document.getElementById("chart");
     const table = document.getElementById("table");
-    const groups = document.getElementById("groups");
 
-    // 🔥 dynamic max scaling
     const allValues = data.groups.flatMap(g => g.items.map(i => i.value));
     const max = Math.max(...allValues);
 
@@ -153,7 +199,6 @@ fetch('data.json')
 
         group.items.forEach(item => {
 
-            // BAR
             const bar = document.createElement("div");
             bar.className = "bar";
 
@@ -163,15 +208,12 @@ fetch('data.json')
 
             const fill = document.createElement("div");
             fill.className = "fill " + item.type;
-
-            // ✅ final scaling
             fill.style.height = (item.value / max) * 420 + "px";
 
             bar.appendChild(label);
             bar.appendChild(fill);
             chart.appendChild(bar);
 
-            // TABLE
             const cell = document.createElement("div");
             cell.className = "cell";
             cell.innerHTML = `
@@ -181,12 +223,6 @@ fetch('data.json')
             table.appendChild(cell);
 
         });
-
-        // GROUP LABEL (spans 2 bars)
-        const g = document.createElement("div");
-        g.style.flex = "2";
-        g.innerText = group.name;
-        groups.appendChild(g);
 
     });
 
