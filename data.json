@@ -1,0 +1,25 @@
+{
+  "groups": [
+    {
+      "name": "FEMA",
+      "items": [
+        { "value": 242, "percent": 12.14, "type": "alt" },
+        { "value": 289, "percent": 14.50, "type": "base" }
+      ]
+    },
+    {
+      "name": "FATHOM",
+      "items": [
+        { "value": 447, "percent": 22.43, "type": "alt" },
+        { "value": 573, "percent": 28.75, "type": "base" }
+      ]
+    },
+    {
+      "name": "DCR",
+      "items": [
+        { "value": 1314, "percent": 65.93, "type": "alt" },
+        { "value": 1396, "percent": 70.05, "type": "base" }
+      ]
+    }
+  ]
+}
