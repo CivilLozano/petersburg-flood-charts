@@ -13,10 +13,10 @@ body {
 
 .title {
     text-align: center;
-    font-size: 48px;
+    font-size: 42px;
     font-weight: 800;
     color: #1f3b73;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .wrapper {
@@ -28,8 +28,8 @@ body {
 /* AXIS LABELS */
 .left-axis {
     position: absolute;
-    left: -95px;
-    top: 240px;
+    left: -85px;
+    top: 180px;
     transform: rotate(-90deg);
     font-weight: bold;
     color: #1f3b73;
@@ -37,8 +37,8 @@ body {
 
 .right-axis {
     position: absolute;
-    right: -120px;
-    top: 240px;
+    right: -110px;
+    top: 180px;
     transform: rotate(90deg);
     font-weight: bold;
     color: #1f3b73;
@@ -47,74 +47,89 @@ body {
 /* AXIS TICKS */
 .y-left, .y-right {
     position: absolute;
-    top: 40px;
-    height: 440px;
+    top: 20px;
+    height: 320px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     font-size: 12px;
 }
 
-.y-left { left: -45px; }
-.y-right { right: -60px; }
+.y-left { left: -40px; }
+.y-right { right: -55px; }
 
-/* GRID SYSTEM */
+/* GRID */
 .grid {
     display: grid;
     grid-template-columns: repeat(6, 1fr);
 }
 
-/* CHART */
+/* CHART (SHORTER) */
 .chart {
-    height: 440px;
+    height: 320px; /* 🔥 reduced height */
     border-left: 2px solid #bbb;
     border-bottom: 2px solid #bbb;
-    border-right: 2px solid #bbb; /* RIGHT AXIS LINE */
-    margin-top: 40px;
-    padding: 20px 10px;
+    border-right: 2px solid #bbb;
+    margin-top: 30px;
+    padding: 10px;
 
-    /* HORIZONTAL GRIDLINES */
+    /* gridlines */
     background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
-    background-size: 100% 80px;
+    background-size: 100% 64px;
 }
 
 /* BAR */
 .bar {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
 }
 
 .fill {
-    width: 60%;
+    width: 55%;
     border-radius: 5px;
+    cursor: pointer;
 }
 
 .alt { background: #2f66c0; }
 .base { background: #b7c6d9; }
 
-.label {
-    font-weight: bold;
-    margin-bottom: 6px;
-    font-size: 14px;
+/* TOOLTIP */
+.tooltip {
+    position: absolute;
+    bottom: 100%;
+    transform: translateY(-6px);
+    background: #1f3b73;
+    color: white;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.2s;
+}
+
+.bar:hover .tooltip {
+    opacity: 1;
 }
 
 /* TABLE */
 .bottom {
-    margin-top: 12px;
+    margin-top: 10px;
 }
 
 .cell {
     text-align: center;
-    padding: 10px;
+    padding: 8px;
     border: 1px solid #bbb;
+    font-size: 13px;
 }
 
 .value {
     font-weight: bold;
     color: #1f3b73;
-    font-size: 18px;
 }
 
 /* GROUP BOXES */
@@ -127,18 +142,17 @@ body {
 .group-box {
     border: 1px solid #bbb;
     text-align: center;
-    padding: 12px 0;
+    padding: 10px 0;
     font-weight: 800;
-    font-size: 18px;
+    font-size: 16px;
 }
 
 /* FOOTER */
 .bottom-title {
     text-align: center;
-    margin-top: 12px;
+    margin-top: 10px;
     font-weight: bold;
     color: #1f3b73;
-    font-size: 18px;
 }
 </style>
 </head>
@@ -168,13 +182,10 @@ body {
     <div>0%</div>
 </div>
 
-<!-- CHART -->
 <div class="chart grid" id="chart"></div>
 
-<!-- TABLE -->
 <div class="bottom grid" id="table"></div>
 
-<!-- GROUP BOXES -->
 <div class="group-row">
     <div class="group-box">FEMA</div>
     <div class="group-box">FATHOM</div>
@@ -203,15 +214,19 @@ fetch('data.json')
             const bar = document.createElement("div");
             bar.className = "bar";
 
-            const label = document.createElement("div");
-            label.className = "label";
-            label.innerHTML = item.value + "<br>(" + item.percent + "%)";
-
             const fill = document.createElement("div");
             fill.className = "fill " + item.type;
-            fill.style.height = (item.value / max) * 380 + "px";
+            fill.style.height = (item.value / max) * 280 + "px";
 
-            bar.appendChild(label);
+            const tooltip = document.createElement("div");
+            tooltip.className = "tooltip";
+            tooltip.innerHTML = `
+                <strong>${item.value}</strong> roads<br>
+                ${item.percent}% of total<br>
+                ${item.risk}
+            `;
+
+            fill.appendChild(tooltip);
             bar.appendChild(fill);
             chart.appendChild(bar);
 
