@@ -28,7 +28,7 @@ body {
 /* AXIS LABELS */
 .left-axis {
     position: absolute;
-    left: -85px;
+    left: -80px;
     top: 180px;
     transform: rotate(-90deg);
     font-weight: bold;
@@ -37,7 +37,7 @@ body {
 
 .right-axis {
     position: absolute;
-    right: -130px;
+    right: -120px;
     top: 180px;
     transform: rotate(90deg);
     font-weight: bold;
@@ -223,15 +223,15 @@ fetch('data_land.json')
 
             const fill = document.createElement("div");
             fill.className = "fill " + item.type;
-            fill.style.height = (item.value / max) * 280 + "px";
+            fill.style.height = (item.value / 6) * 280 + "px";
 
             const tooltip = document.createElement("div");
             tooltip.className = "tooltip";
             tooltip.innerHTML = `
-                <strong>${item.value}</strong> roads<br>
-                ${item.percent}% of total<br>
-                ${item.risk}
-            `;
+  <strong>${item.value} mi²</strong><br>
+  ${item.percent}% of total<br>
+  ${item.risk}
+`;
 
             bar.appendChild(fill);
 bar.appendChild(tooltip);
