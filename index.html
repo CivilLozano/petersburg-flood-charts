@@ -174,9 +174,10 @@ fill.style.height = (item.value / max) * 350 + "px";
 
         // GROUP LABEL
         const g = document.createElement("div");
-        g.style.flex = "1";
-        g.innerText = group.name;
-        groups.appendChild(g);
+g.style.flex = "2";  // spans 2 bars
+g.style.textAlign = "center";
+g.innerText = group.name;
+groups.appendChild(g);
 
     });
 
