@@ -229,8 +229,9 @@ fetch('data.json')
                 ${item.risk}
             `;
 
-            fill.appendChild(tooltip);
             bar.appendChild(fill);
+            bar.appendChild(tooltip);
+            chart.appendChild(bar);
           
 
             const cell = document.createElement("div");
