@@ -3,22 +3,22 @@
     {
       "name": "FEMA",
       "items": [
-        { "value": 242, "percent": 12.14, "type": "alt" },
-        { "value": 289, "percent": 14.50, "type": "base" }
+        { "value": 242, "percent": 12.14, "risk": "1.0% (100 yr)", "type": "alt" },
+        { "value": 289, "percent": 14.50, "risk": "0.2% (500 yr)", "type": "base" }
       ]
     },
     {
       "name": "FATHOM",
       "items": [
-        { "value": 447, "percent": 22.43, "type": "alt" },
-        { "value": 573, "percent": 28.75, "type": "base" }
+        { "value": 447, "percent": 22.43, "risk": "1.0% (100 yr)", "type": "alt" },
+        { "value": 573, "percent": 28.75, "risk": "0.2% (500 yr)", "type": "base" }
       ]
     },
     {
       "name": "DCR",
       "items": [
-        { "value": 1314, "percent": 65.93, "type": "alt" },
-        { "value": 1396, "percent": 70.05, "type": "base" }
+        { "value": 1314, "percent": 65.93, "risk": "1.0% (100 yr)", "type": "alt" },
+        { "value": 1396, "percent": 70.05, "risk": "0.2% (500 yr)", "type": "base" }
       ]
     }
   ]
