@@ -156,7 +156,8 @@ fetch('data.json')
 
             const fill = document.createElement("div");
             fill.className = "fill " + item.type;
-            fill.style.height = item.percent * 5 + "px";
+            const max = 1400;
+fill.style.height = (item.value / max) * 350 + "px";
 
             bar.appendChild(label);
             bar.appendChild(fill);
