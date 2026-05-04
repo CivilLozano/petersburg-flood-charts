@@ -1,1 +1,261 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Flood Charts</title>
 
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: white;
+}
+
+.title {
+    text-align: center;
+    font-size: 42px;
+    font-weight: 800;
+    color: #1f3b73;
+    margin-top: 20px;
+}
+
+.wrapper {
+    width: 80%;
+    margin: auto;
+    position: relative;
+}
+
+/* AXIS LABELS */
+.left-axis {
+    position: absolute;
+    left: -90px;
+    top: 180px;
+    transform: rotate(-90deg);
+    font-weight: bold;
+    color: #1f3b73;
+}
+
+.right-axis {
+    position: absolute;
+    right: -120px;
+    top: 180px;
+    transform: rotate(90deg);
+    font-weight: bold;
+    color: #1f3b73;
+}
+
+/* AXIS TICKS */
+.y-left, .y-right {
+    position: absolute;
+    top: 20px;
+    height: 320px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+.y-left { left: -40px; }
+.y-right { right: -55px; }
+
+/* CHART */
+.chart {
+    height: 320px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+
+    border-left: 2px solid #bbb;
+    border-bottom: 2px solid #bbb;
+    border-right: 2px solid #bbb;
+
+    margin-top: 30px;
+    padding: 10px;
+
+    /* SAFE GRID */
+    background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
+    background-size: 100% 64px;
+}
+
+/* BAR */
+.bar {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    position: relative;
+    width: 80px; /* 🔥 critical */
+}
+
+/* BAR FILL */
+.fill {
+    width: 100%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* COLORS */
+.alt { background: #d96a7f; }
+.base { background: #cbb690; }
+
+/* TOOLTIP */
+.tooltip {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%) translateY(-8px);
+    bottom: 100%;
+
+    background: #1f3b73;
+    color: white;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 4px;
+
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.15s;
+}
+
+.bar:hover .tooltip {
+    opacity: 1;
+}
+
+/* TABLE */
+.bottom {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+}
+
+.cell {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #bbb;
+    font-size: 13px;
+}
+
+.value {
+    font-weight: bold;
+    color: #1f3b73;
+}
+
+/* GROUP BOXES */
+.group-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    margin-top: -1px;
+}
+
+.group-box {
+    border: 1px solid #bbb;
+    text-align: center;
+    padding: 10px 0;
+    font-weight: 800;
+    font-size: 16px;
+}
+
+/* FOOTER */
+.bottom-title {
+    text-align: center;
+    margin-top: 10px;
+    font-weight: bold;
+    color: #1f3b73;
+}
+</style>
+</head>
+
+<body>
+
+<div class="title">BUILDINGS ON FLOOD PLAINS</div>
+
+<div class="wrapper">
+
+<div class="left-axis">NUMBER OF BUILDINGS</div>
+<div class="right-axis">% OF PETERSBURG BUILDINGS</div>
+
+<div class="y-left">
+  <div>6000</div>
+  <div>5000</div>
+  <div>4000</div>
+  <div>3000</div>
+  <div>2000</div>
+  <div>1000</div>
+  <div>0</div>
+</div>
+
+<div class="y-right">
+  <div>25%</div>
+  <div>20%</div>
+  <div>15%</div>
+  <div>10%</div>
+  <div>5%</div>
+  <div>0%</div>
+</div>
+
+<div class="chart" id="chart"></div>
+
+<div class="bottom" id="table"></div>
+
+<div class="group-row">
+    <div class="group-box">FEMA</div>
+    <div class="group-box">FATHOM</div>
+    <div class="group-box">DCR</div>
+</div>
+
+<div class="bottom-title">BUILDINGS ON FLOOD PLAIN BY RISK</div>
+
+</div>
+
+<script>
+fetch('data_buildings.json')
+.then(res => res.json())
+.then(data => {
+
+    const chart = document.getElementById("chart");
+    const table = document.getElementById("table");
+
+    const values = data.groups.flatMap(g => g.items.map(i => i.value));
+    const max = Math.max(...values); // 🔥 dynamic scaling
+
+    data.groups.forEach(group => {
+
+        group.items.forEach(item => {
+
+            const bar = document.createElement("div");
+            bar.className = "bar";
+
+            const fill = document.createElement("div");
+            fill.className = "fill " + item.type;
+            fill.style.height = (item.value / max) * 280 + "px";
+
+            const tooltip = document.createElement("div");
+            tooltip.className = "tooltip";
+            tooltip.innerHTML = `
+                <strong>${item.value} mi²</strong><br>
+                ${item.percent}% of total<br>
+                ${item.risk}
+            `;
+
+            bar.appendChild(fill);
+            bar.appendChild(tooltip);
+            chart.appendChild(bar);
+
+            const cell = document.createElement("div");
+            cell.className = "cell";
+            cell.innerHTML = `
+                <div class="value">${item.value}</div>
+                <div>${item.risk}</div>
+            `;
+            table.appendChild(cell);
+
+        });
+
+    });
+
+});
+</script>
+
+</body>
+</html>
