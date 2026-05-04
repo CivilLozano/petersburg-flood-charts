@@ -11,6 +11,7 @@ body {
     margin: 0;
 }
 
+/* TITLE */
 .title {
     text-align: center;
     font-size: 42px;
@@ -19,48 +20,50 @@ body {
     margin-top: 30px;
 }
 
+/* WRAPPER */
 .wrapper {
     width: 90%;
     margin: auto;
     position: relative;
 }
 
+/* CHART */
 .chart {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    height: 400px;
+    height: 460px;
     border-left: 2px solid #ccc;
     border-bottom: 2px solid #ccc;
     padding: 20px;
-    margin-top: 40px;
+    margin-top: 30px;
 }
 
-/* bars */
+/* BAR */
 .bar {
     width: 12%;
     text-align: center;
 }
 
+/* BAR COLORS */
 .fill {
     width: 100%;
     border-radius: 6px;
 }
 
-/* colors */
 .base { background: #b7c6d9; }
 .alt { background: #2f66c0; }
 
-/* labels above */
+/* LABEL ABOVE BAR */
 .label {
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
-/* bottom table */
+/* TABLE */
 .bottom {
     display: flex;
-    margin-top: 20px;
+    margin-top: 10px;
     border: 1px solid #ccc;
 }
 
@@ -80,19 +83,19 @@ body {
     color: #1f3b73;
 }
 
-/* groups */
+/* GROUP LABELS */
 .groups {
     display: flex;
-    margin-top: 10px;
+    margin-top: 8px;
     font-weight: bold;
     text-align: center;
 }
 
-/* axis */
+/* AXIS */
 .left-axis {
     position: absolute;
     left: -70px;
-    top: 200px;
+    top: 190px;
     transform: rotate(-90deg);
     font-weight: bold;
     color: #1f3b73;
@@ -101,12 +104,13 @@ body {
 .right-axis {
     position: absolute;
     right: -90px;
-    top: 200px;
+    top: 190px;
     transform: rotate(90deg);
     font-weight: bold;
     color: #1f3b73;
 }
 
+/* BOTTOM TITLE */
 .bottom-title {
     text-align: center;
     margin-top: 15px;
@@ -141,7 +145,7 @@ fetch('data.json')
     const table = document.getElementById("table");
     const groups = document.getElementById("groups");
 
-    // 🔥 calculate max correctly INSIDE here
+    // 🔥 dynamic max scaling
     const allValues = data.groups.flatMap(g => g.items.map(i => i.value));
     const max = Math.max(...allValues);
 
@@ -160,8 +164,8 @@ fetch('data.json')
             const fill = document.createElement("div");
             fill.className = "fill " + item.type;
 
-            // ✅ correct scaling
-            fill.style.height = (item.value / max) * 350 + "px";
+            // ✅ final scaling
+            fill.style.height = (item.value / max) * 420 + "px";
 
             bar.appendChild(label);
             bar.appendChild(fill);
