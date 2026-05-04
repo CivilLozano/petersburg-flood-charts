@@ -72,16 +72,23 @@ body {
 
 /* CHART (SHORTER) */
 .chart {
-    height: 320px; /* 🔥 reduced height */
-    border-left: 2px solid #bbb;
-    border-bottom: 2px solid #bbb;
-    border-right: 2px solid #bbb;
-    margin-top: 30px;
-    padding: 10px;
+  height: 320px;
 
-    /* gridlines */
-    background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
-    background-size: 100% 64px;
+  display: flex;                 /* 🔥 THIS FIXES EVERYTHING */
+  align-items: flex-end;         /* bars grow from bottom */
+  justify-content: space-between;
+  gap: 40px;
+
+  border-left: 2px solid #bbb;
+  border-bottom: 2px solid #bbb;
+  border-right: 2px solid #bbb;
+
+  margin-top: 30px;
+  padding: 10px;
+
+  /* gridlines */
+  background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
+  background-size: 100% 46px;   /* adjust spacing */
 }
 
 /* BAR */
