@@ -28,10 +28,8 @@ body {
 
 /* LAYOUT */
 .wrapper {
-    width: 90%;
+    width: 85%;
     margin: auto;
-    display: flex;
-    gap: 30px;
 }
 
 .chart-container {
@@ -175,14 +173,9 @@ body {
 <div class="chart-container">
 
 <div class="left-axis">PRECIPITATION (inches)</div>
-<div class="right-axis">REFERENCE (%)</div>
 
 <div class="y-left">
 <div>10</div><div>8</div><div>6</div><div>4</div><div>2</div><div>0</div>
-</div>
-
-<div class="y-right">
-<div>100%</div><div>80%</div><div>60%</div><div>40%</div><div>20%</div><div>0%</div>
 </div>
 
 <div class="chart" id="chart"></div>
@@ -201,7 +194,7 @@ Source: NOAA NCEI – Station USC00446656 (Petersburg, VA)
 
 <!-- SIDE PANEL -->
 <div class="side-panel">
-<div class="highlight-box">
+<div class="highlight-box" style="width: 350px; margin: 20px auto;">
 <strong>2025 Storm Highlights</strong>
 <ul>
 <li>8.39 inches accumulated in 4 days</li>
@@ -299,21 +292,20 @@ hover.setAttribute("cy",y);
 hover.setAttribute("r",12);
 hover.setAttribute("fill","transparent");
 
-hover.addEventListener("mousemove",(e)=>{
-tooltip.style.opacity=1;
-tooltip.style.left=e.pageX+10+"px";
-tooltip.style.top=e.pageY-30+"px";
-tooltip.innerHTML=`
-<strong>${p.day}</strong><br>
-Accumulated: ${p.acc} in<br>
-Daily: ${p.daily} in
-`;
+hover.addEventListener("mouseenter", () => {
+    tooltip.style.opacity = 1;
+    tooltip.style.left = (x + chart.offsetLeft - 40) + "px";
+    tooltip.style.top = (y + chart.offsetTop - 50) + "px";
+
+    tooltip.innerHTML = `
+        <strong>${p.day}</strong><br>
+        Accumulated: ${p.acc} in<br>
+        Daily: ${p.daily} in
+    `;
 });
 
-hover.addEventListener("mouseleave",()=>tooltip.style.opacity=0);
-
-svg.appendChild(hover);
-
+hover.addEventListener("mouseleave", () => {
+    tooltip.style.opacity = 0;
 });
 
 // AREA
@@ -333,7 +325,7 @@ svg.appendChild(line);
 const normal = document.createElementNS(svgNS,"path");
 normal.setAttribute("d",normalPath);
 normal.setAttribute("stroke","#8b5a2b");
-normal.setAttribute("stroke-width","2");
+normal.setAttribute("stroke-width","2.5");
 normal.setAttribute("fill","none");
 svg.appendChild(normal);
 
@@ -353,7 +345,7 @@ svg.appendChild(record);
 // RECORD TEXT
 const recordText = document.createElementNS(svgNS,"text");
 recordText.setAttribute("x",width-paddingX);
-recordText.setAttribute("y",recordY-5);
+recordText.setAttribute("y",recordY-12);
 recordText.setAttribute("text-anchor","end");
 recordText.setAttribute("fill","red");
 recordText.setAttribute("font-size","12");
