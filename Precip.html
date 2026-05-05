@@ -22,83 +22,64 @@ body {
 .subtitle {
     text-align: center;
     font-size: 18px;
-    color: #666;
-    margin-bottom: 10px;
+    color: #555;
+    margin-bottom: 12px;
 }
 
-/* LAYOUT */
 .wrapper {
-    width: 85%;
+    width: 90%;
     margin: auto;
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
 }
 
 .chart-container {
-    flex: 3;
+    flex: 1;
     position: relative;
 }
 
 .side-panel {
-    flex: 1;
+    width: 300px;
+    padding-top: 70px;
 }
 
-/* AXIS LABELS */
 .left-axis {
     position: absolute;
-    left: -90px;
+    left: -95px;
     top: 150px;
     transform: rotate(-90deg);
     font-weight: bold;
     color: #1f3b73;
 }
 
-.right-axis {
+.y-left {
     position: absolute;
-    right: -90px;
-    top: 150px;
-    transform: rotate(90deg);
-    font-weight: bold;
-    color: #1f3b73;
-}
-
-/* AXIS TICKS */
-.y-left, .y-right {
-    position: absolute;
-    top: 20px;
-    height: 300px;
+    top: 0;
+    left: -40px;
+    height: 320px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     font-size: 12px;
 }
 
-.y-left { left: -40px; }
-.y-right { right: -40px; }
-
-/* CHART */
 .chart {
-    height: 300px;
+    height: 320px;
     border-left: 2px solid #bbb;
     border-bottom: 2px solid #bbb;
-    border-right: 2px solid #bbb;
     position: relative;
-
     background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
-    background-size: 100% 60px;
+    background-size: 100% 64px;
 }
 
-/* TOOLTIP */
-#tooltip {
-    position: absolute;
-    background: #1f3b73;
-    color: white;
-    padding: 6px 8px;
-    font-size: 12px;
-    border-radius: 4px;
-    pointer-events: none;
-    opacity: 0;
+.x-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 13px;
 }
 
-/* LEGEND */
 .legend {
     text-align: center;
     margin-top: 10px;
@@ -109,55 +90,64 @@ body {
     margin: 0 12px;
 }
 
-.dot {
-    width: 8px;
-    height: 8px;
+.legend-line {
+    display: inline-block;
+    width: 28px;
+    height: 3px;
+    vertical-align: middle;
+    margin-right: 6px;
+}
+
+.blue-line { background: #2f66c0; }
+.brown-line { background: #8b5a2b; }
+
+.red-line {
+    border-top: 2px dashed red;
+    height: 0;
+}
+
+.legend-dot {
+    display: inline-block;
+    width: 9px;
+    height: 9px;
     background: #2f66c0;
     border-radius: 50%;
-    display: inline-block;
+    vertical-align: middle;
+    margin-right: 5px;
 }
 
-.line-blue {
-    display: inline-block;
-    width: 20px;
-    height: 2px;
-    background: #2f66c0;
-}
-
-.line-brown {
-    display: inline-block;
-    width: 20px;
-    height: 2px;
-    background: #8b5a2b;
-}
-
-.line-red {
-    display: inline-block;
-    width: 20px;
-    border-top: 2px dashed red;
-}
-
-/* SIDE PANEL */
 .highlight-box {
     border: 1px solid #bbb;
     border-radius: 8px;
-    padding: 12px;
-    background: #f5f5f5;
+    padding: 14px 16px;
+    background: #f7f7f7;
     font-size: 14px;
 }
 
 .highlight-box strong {
     display: block;
-    margin-bottom: 6px;
     color: #1f3b73;
+    margin-bottom: 8px;
+    font-size: 15px;
 }
 
-/* SOURCE */
 .source {
     text-align: center;
     font-size: 12px;
     margin-top: 10px;
     color: #555;
+}
+
+#tooltip {
+    position: fixed;
+    background: #1f3b73;
+    color: white;
+    padding: 7px 9px;
+    font-size: 12px;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 9999;
 }
 </style>
 </head>
@@ -169,190 +159,217 @@ body {
 
 <div class="wrapper">
 
-<!-- CHART -->
-<div class="chart-container">
+    <div class="chart-container">
 
-<div class="left-axis">PRECIPITATION (inches)</div>
+        <div class="left-axis">PRECIPITATION (inches)</div>
 
-<div class="y-left">
-<div>10</div><div>8</div><div>6</div><div>4</div><div>2</div><div>0</div>
-</div>
+        <div class="y-left">
+            <div>10</div>
+            <div>8</div>
+            <div>6</div>
+            <div>4</div>
+            <div>2</div>
+            <div>0</div>
+        </div>
 
-<div class="chart" id="chart"></div>
+        <div class="chart" id="chart"></div>
 
-<div class="legend">
-    <span class="legend-item"><span class="dot"></span> 2025 Accumulation</span>
-    <span class="legend-item"><span class="line-brown"></span> Normal</span>
-    <span class="legend-item"><span class="line-red"></span> Record (8.37 in)</span>
-</div>
+        <div class="x-axis">
+            <div>Jul 12</div>
+            <div>Jul 13</div>
+            <div>Jul 14</div>
+            <div>Jul 15</div>
+        </div>
 
-<div class="source">
-Source: NOAA NCEI – Station USC00446656 (Petersburg, VA)
-</div>
+        <div class="legend">
+            <span class="legend-item">
+                <span class="legend-line blue-line"></span><span class="legend-dot"></span>2025 Accumulation
+            </span>
+            <span class="legend-item">
+                <span class="legend-line brown-line"></span>Normal
+            </span>
+            <span class="legend-item">
+                <span class="legend-line red-line"></span>Record 3-Day Total (8.37 in)
+            </span>
+        </div>
 
-</div>
+        <div class="source">
+            Source: NOAA NCEI – Station USC00446656 (Petersburg, VA)<br>
+            Period of Record: 1979-08-01 to 2025-12-31
+        </div>
 
-<!-- SIDE PANEL -->
-<div class="side-panel">
-<div class="highlight-box" style="width: 350px; margin: 20px auto;">
-<strong>2025 Storm Highlights</strong>
-<ul>
-<li>8.39 inches accumulated in 4 days</li>
-<li>5.16 inches fell on Jul 13 (~61%)</li>
-<li>Highest 3-day total since 1979</li>
-</ul>
-</div>
-</div>
+    </div>
+
+    <div class="side-panel">
+        <div class="highlight-box">
+            <strong>2025 Storm Highlights</strong>
+            <ul>
+                <li>8.39 inches accumulated in 4 days</li>
+                <li>5.16 inches fell on Jul 13 (~61% of total)</li>
+                <li>Highest 3-day total on record since 1979</li>
+            </ul>
+        </div>
+    </div>
 
 </div>
 
 <div id="tooltip"></div>
 
 <script>
-
 const data = [
-{day:"Jul 12", acc:0.46, daily:0.46, normal:0.10},
-{day:"Jul 13", acc:5.62, daily:5.16, normal:0.25},
-{day:"Jul 14", acc:8.37, daily:2.75, normal:0.40},
-{day:"Jul 15", acc:8.39, daily:0.02, normal:0.55}
+    {day: "Jul 12", acc: 0.46, daily: 0.46, normal: 0.10},
+    {day: "Jul 13", acc: 5.62, daily: 5.16, normal: 0.25},
+    {day: "Jul 14", acc: 8.37, daily: 2.75, normal: 0.40},
+    {day: "Jul 15", acc: 8.39, daily: 0.02, normal: 0.55}
 ];
 
 const recordValue = 8.37;
+const max = 10;
 
 const chart = document.getElementById("chart");
 const tooltip = document.getElementById("tooltip");
 
 const width = chart.clientWidth;
 const height = chart.clientHeight;
-const max = 10;
+const paddingX = 36;
 
 const svgNS = "http://www.w3.org/2000/svg";
 const svg = document.createElementNS(svgNS, "svg");
-
 svg.setAttribute("width", width);
 svg.setAttribute("height", height);
+svg.style.position = "absolute";
+svg.style.left = 0;
+svg.style.top = 0;
 
 chart.appendChild(svg);
 
-// OFFSET FIX (prevents clipping)
-const paddingX = 40;
-
-let linePath = "";
+let accPath = "";
 let normalPath = "";
+let areaPath = "";
 
-data.forEach((p,i)=>{
+data.forEach((p, i) => {
+    const x = paddingX + (i / (data.length - 1)) * (width - 2 * paddingX);
+    const y = height - (p.acc / max) * height;
+    const yNormal = height - (p.normal / max) * height;
 
-const x = paddingX + (i/(data.length-1))*(width - 2*paddingX);
-const y = height - (p.acc/max)*height;
-const yN = height - (p.normal/max)*height;
-
-if(i===0){
-linePath += `M ${x} ${y}`;
-normalPath += `M ${x} ${yN}`;
-}else{
-linePath += `L ${x} ${y}`;
-normalPath += `L ${x} ${yN}`;
-}
-
-// POINT
-const point = document.createElementNS(svgNS,"circle");
-point.setAttribute("cx",x);
-point.setAttribute("cy",y);
-point.setAttribute("r",5);
-point.setAttribute("fill","#2f66c0");
-
-svg.appendChild(point);
-
-// LABEL (fix clipping)
-const label = document.createElementNS(svgNS,"text");
-label.setAttribute("x",x);
-label.setAttribute("y",y-10);
-label.setAttribute("text-anchor","middle");
-label.setAttribute("fill","#2f66c0");
-label.setAttribute("font-size","12");
-label.textContent = p.acc;
-
-svg.appendChild(label);
-
-// NORMAL LABELS
-const nLabel = document.createElementNS(svgNS,"text");
-nLabel.setAttribute("x",x);
-nLabel.setAttribute("y",yN-8);
-nLabel.setAttribute("text-anchor","middle");
-nLabel.setAttribute("fill","#8b5a2b");
-nLabel.setAttribute("font-size","11");
-nLabel.textContent = p.normal;
-
-svg.appendChild(nLabel);
-
-// TOOLTIP
-const hover = document.createElementNS(svgNS,"circle");
-hover.setAttribute("cx",x);
-hover.setAttribute("cy",y);
-hover.setAttribute("r",12);
-hover.setAttribute("fill","transparent");
-
-hover.addEventListener("mouseenter", () => {
-    tooltip.style.opacity = 1;
-    tooltip.style.left = (x + chart.offsetLeft - 40) + "px";
-    tooltip.style.top = (y + chart.offsetTop - 50) + "px";
-
-    tooltip.innerHTML = `
-        <strong>${p.day}</strong><br>
-        Accumulated: ${p.acc} in<br>
-        Daily: ${p.daily} in
-    `;
+    if (i === 0) {
+        accPath += `M ${x} ${y}`;
+        normalPath += `M ${x} ${yNormal}`;
+        areaPath += `M ${x} ${height} L ${x} ${y}`;
+    } else {
+        accPath += ` L ${x} ${y}`;
+        normalPath += ` L ${x} ${yNormal}`;
+        areaPath += ` L ${x} ${y}`;
+    }
 });
 
-hover.addEventListener("mouseleave", () => {
-    tooltip.style.opacity = 0;
-});
+areaPath += ` L ${width - paddingX} ${height} Z`;
 
-// AREA
-const area = document.createElementNS(svgNS,"path");
-area.setAttribute("d", linePath + `L ${width-paddingX} ${height} L ${paddingX} ${height} Z`);
-area.setAttribute("fill","rgba(47,102,192,0.15)");
+const area = document.createElementNS(svgNS, "path");
+area.setAttribute("d", areaPath);
+area.setAttribute("fill", "rgba(47,102,192,0.16)");
 svg.appendChild(area);
 
-// LINES
-const line = document.createElementNS(svgNS,"path");
-line.setAttribute("d",linePath);
-line.setAttribute("stroke","#2f66c0");
-line.setAttribute("stroke-width","3");
-line.setAttribute("fill","none");
-svg.appendChild(line);
+const normalLine = document.createElementNS(svgNS, "path");
+normalLine.setAttribute("d", normalPath);
+normalLine.setAttribute("stroke", "#8b5a2b");
+normalLine.setAttribute("stroke-width", "2.5");
+normalLine.setAttribute("fill", "none");
+svg.appendChild(normalLine);
 
-const normal = document.createElementNS(svgNS,"path");
-normal.setAttribute("d",normalPath);
-normal.setAttribute("stroke","#8b5a2b");
-normal.setAttribute("stroke-width","2.5");
-normal.setAttribute("fill","none");
-svg.appendChild(normal);
+const mainLine = document.createElementNS(svgNS, "path");
+mainLine.setAttribute("d", accPath);
+mainLine.setAttribute("stroke", "#2f66c0");
+mainLine.setAttribute("stroke-width", "3");
+mainLine.setAttribute("fill", "none");
+svg.appendChild(mainLine);
 
-// RECORD LINE
-const recordY = height - (recordValue/max)*height;
+const recordY = height - (recordValue / max) * height;
 
-const record = document.createElementNS(svgNS,"line");
-record.setAttribute("x1",paddingX);
-record.setAttribute("x2",width-paddingX);
-record.setAttribute("y1",recordY);
-record.setAttribute("y2",recordY);
-record.setAttribute("stroke","red");
-record.setAttribute("stroke-dasharray","5,5");
+const recordLine = document.createElementNS(svgNS, "line");
+recordLine.setAttribute("x1", paddingX);
+recordLine.setAttribute("x2", width - paddingX);
+recordLine.setAttribute("y1", recordY);
+recordLine.setAttribute("y2", recordY);
+recordLine.setAttribute("stroke", "red");
+recordLine.setAttribute("stroke-width", "2");
+recordLine.setAttribute("stroke-dasharray", "6,5");
+svg.appendChild(recordLine);
 
-svg.appendChild(record);
-
-// RECORD TEXT
-const recordText = document.createElementNS(svgNS,"text");
-recordText.setAttribute("x",width-paddingX);
-recordText.setAttribute("y",recordY-12);
-recordText.setAttribute("text-anchor","end");
-recordText.setAttribute("fill","red");
-recordText.setAttribute("font-size","12");
-recordText.textContent="Record 3-day total (8.37 in)";
-
+const recordText = document.createElementNS(svgNS, "text");
+recordText.setAttribute("x", width - paddingX - 8);
+recordText.setAttribute("y", recordY - 10);
+recordText.setAttribute("text-anchor", "end");
+recordText.setAttribute("fill", "red");
+recordText.setAttribute("font-size", "12");
+recordText.setAttribute("font-weight", "bold");
+recordText.textContent = "Record 3-day total (8.37 in)";
 svg.appendChild(recordText);
 
+data.forEach((p, i) => {
+    const x = paddingX + (i / (data.length - 1)) * (width - 2 * paddingX);
+    const y = height - (p.acc / max) * height;
+    const yNormal = height - (p.normal / max) * height;
+
+    const point = document.createElementNS(svgNS, "circle");
+    point.setAttribute("cx", x);
+    point.setAttribute("cy", y);
+    point.setAttribute("r", 6);
+    point.setAttribute("fill", "#2f66c0");
+    svg.appendChild(point);
+
+    const label = document.createElementNS(svgNS, "text");
+    label.setAttribute("x", x);
+    label.setAttribute("y", y - 12);
+    label.setAttribute("text-anchor", "middle");
+    label.setAttribute("fill", "#2f66c0");
+    label.setAttribute("font-size", "12");
+    label.setAttribute("font-weight", "bold");
+    label.textContent = p.acc.toFixed(2);
+    svg.appendChild(label);
+
+    const normalPoint = document.createElementNS(svgNS, "circle");
+    normalPoint.setAttribute("cx", x);
+    normalPoint.setAttribute("cy", yNormal);
+    normalPoint.setAttribute("r", 5);
+    normalPoint.setAttribute("fill", "#8b5a2b");
+    svg.appendChild(normalPoint);
+
+    const normalLabel = document.createElementNS(svgNS, "text");
+    normalLabel.setAttribute("x", x);
+    normalLabel.setAttribute("y", yNormal - 10);
+    normalLabel.setAttribute("text-anchor", "middle");
+    normalLabel.setAttribute("fill", "#8b5a2b");
+    normalLabel.setAttribute("font-size", "12");
+    normalLabel.setAttribute("font-weight", "bold");
+    normalLabel.textContent = p.normal.toFixed(2);
+    svg.appendChild(normalLabel);
+
+    const hover = document.createElementNS(svgNS, "circle");
+    hover.setAttribute("cx", x);
+    hover.setAttribute("cy", y);
+    hover.setAttribute("r", 16);
+    hover.setAttribute("fill", "transparent");
+    hover.style.cursor = "pointer";
+
+    hover.addEventListener("mousemove", (e) => {
+        tooltip.style.opacity = 1;
+        tooltip.style.left = (e.clientX + 12) + "px";
+        tooltip.style.top = (e.clientY - 38) + "px";
+        tooltip.innerHTML = `
+            <strong>${p.day}</strong><br>
+            Accumulated: ${p.acc.toFixed(2)} in<br>
+            Daily rainfall: ${p.daily.toFixed(2)} in<br>
+            Normal: ${p.normal.toFixed(2)} in
+        `;
+    });
+
+    hover.addEventListener("mouseleave", () => {
+        tooltip.style.opacity = 0;
+    });
+
+    svg.appendChild(hover);
+});
 </script>
 
 </body>
