@@ -1,1 +1,275 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Precipitation</title>
 
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: white;
+}
+
+.title {
+    text-align: center;
+    font-size: 42px;
+    font-weight: 800;
+    color: #1f3b73;
+    margin-top: 20px;
+}
+
+.wrapper {
+    width: 80%;
+    margin: auto;
+    position: relative;
+}
+
+/* AXIS */
+.left-axis {
+    position: absolute;
+    left: -90px;
+    top: 180px;
+    transform: rotate(-90deg);
+    font-weight: bold;
+    color: #1f3b73;
+}
+
+.y-left {
+    position: absolute;
+    top: 20px;
+    height: 320px;
+    left: -40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 12px;
+}
+
+/* CHART */
+.chart {
+    height: 320px;
+    border-left: 2px solid #bbb;
+    border-bottom: 2px solid #bbb;
+    margin-top: 30px;
+    padding: 10px;
+    position: relative;
+
+    background-image: linear-gradient(to top, #e6e6e6 1px, transparent 1px);
+    background-size: 100% 64px;
+}
+
+/* SVG */
+svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+/* AREA */
+.area {
+    fill: rgba(47,102,192,0.18);
+}
+
+/* MAIN LINE */
+.line-main {
+    stroke: #2f66c0;
+    stroke-width: 3;
+    fill: none;
+}
+
+/* NORMAL LINE */
+.line-normal {
+    stroke: #8b5a2b;
+    stroke-width: 2;
+    fill: none;
+}
+
+/* RECORD LINE */
+.record-line {
+    stroke: #cc0000;
+    stroke-width: 2;
+    stroke-dasharray: 6,4;
+}
+
+/* POINTS */
+.point {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: #2f66c0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+/* TOOLTIP */
+.tooltip {
+    position: absolute;
+    transform: translate(-50%, -120%);
+    background: #1f3b73;
+    color: white;
+    font-size: 12px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.point:hover .tooltip {
+    opacity: 1;
+}
+
+/* X LABELS */
+.x-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 13px;
+}
+
+/* SOURCE */
+.source {
+    text-align: center;
+    font-size: 12px;
+    color: #555;
+    margin-top: 10px;
+}
+
+/* LEGEND */
+.legend {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="title">ACCUMULATED PRECIPITATION – JULY 2025 STORM</div>
+
+<div class="wrapper">
+
+<div class="left-axis">PRECIPITATION (inches)</div>
+
+<div class="y-left">
+  <div>9</div>
+  <div>7</div>
+  <div>5</div>
+  <div>3</div>
+  <div>1</div>
+  <div>0</div>
+</div>
+
+<div class="chart" id="chart"></div>
+<div class="x-axis" id="xlabels"></div>
+
+<div class="legend">
+<span style="color:#2f66c0;">●</span> 2025 Accumulation &nbsp;&nbsp;
+<span style="color:#8b5a2b;">―</span> Normal &nbsp;&nbsp;
+<span style="color:#cc0000;">– –</span> Record (8.37 in)
+</div>
+
+<div class="source">
+Source: NOAA NCEI – Station USC00446656 (Petersburg, VA)
+</div>
+
+</div>
+
+<script>
+fetch('data_precip.json')
+.then(res => res.json())
+.then(data => {
+
+    const chart = document.getElementById("chart");
+    const xlabels = document.getElementById("xlabels");
+
+    const max = 9; // 🔥 fixed scale to match axis
+    const width = chart.clientWidth;
+    const height = 280;
+
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", width);
+    svg.setAttribute("height", height);
+
+    let path = "";
+    let areaPath = "";
+    let normalPath = "";
+
+    data.points.forEach((p, i) => {
+
+        const x = (i / (data.points.length - 1)) * width;
+        const y = height - (p.acc / max) * height;
+        const yN = height - (p.normal / max) * height;
+
+        if (i === 0) {
+            path += `M ${x} ${y}`;
+            areaPath += `M ${x} ${height} L ${x} ${y}`;
+            normalPath += `M ${x} ${yN}`;
+        } else {
+            path += ` L ${x} ${y}`;
+            areaPath += ` L ${x} ${y}`;
+            normalPath += ` L ${x} ${yN}`;
+        }
+
+        const point = document.createElement("div");
+        point.className = "point";
+        point.style.left = (x - 5) + "px";
+        point.style.bottom = (height - y) + "px";
+
+        const tooltip = document.createElement("div");
+        tooltip.className = "tooltip";
+        tooltip.innerHTML = `
+            <strong>${p.acc.toFixed(2)} in</strong><br>
+            Daily: ${p.daily} in<br>
+            ${p.date}
+        `;
+
+        point.appendChild(tooltip);
+        chart.appendChild(point);
+
+        const label = document.createElement("div");
+        label.innerText = p.date;
+        xlabels.appendChild(label);
+    });
+
+    areaPath += ` L ${width} ${height} Z`;
+
+    // AREA
+    const area = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    area.setAttribute("d", areaPath);
+    area.setAttribute("class", "area");
+
+    // MAIN LINE
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    line.setAttribute("d", path);
+    line.setAttribute("class", "line-main");
+
+    // NORMAL LINE
+    const normal = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    normal.setAttribute("d", normalPath);
+    normal.setAttribute("class", "line-normal");
+
+    // RECORD LINE
+    const recordY = height - (8.37 / max) * height;
+
+    const record = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    record.setAttribute("x1", 0);
+    record.setAttribute("x2", width);
+    record.setAttribute("y1", recordY);
+    record.setAttribute("y2", recordY);
+    record.setAttribute("class", "record-line");
+
+    svg.appendChild(area);
+    svg.appendChild(normal);
+    svg.appendChild(line);
+    svg.appendChild(record);
+
+    chart.appendChild(svg);
+
+});
+</script>
+
+</body>
+</html>
