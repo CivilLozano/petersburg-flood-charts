@@ -1,1 +1,8 @@
-
+{
+  "points": [
+    {"date": "Jul 12", "daily": 0.46, "acc": 0.46, "normal": 0.10},
+    {"date": "Jul 13", "daily": 5.16, "acc": 5.62, "normal": 0.25},
+    {"date": "Jul 14", "daily": 2.75, "acc": 8.37, "normal": 0.40},
+    {"date": "Jul 15", "daily": 0.02, "acc": 8.39, "normal": 0.55}
+  ]
+}
